@@ -7,7 +7,6 @@ class RemoteKnowledgeGraph(object):
         self.endpoint = SPARQLWrapper(self.location)
 
     def get_hops(self, vertex):
-        print(vertex)
         if not vertex.startswith('http://'):
             return []
 
