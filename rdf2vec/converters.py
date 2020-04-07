@@ -1,4 +1,4 @@
-from rdf2vec.graph import KnowledgeGraph, Vertex
+from rdf2vec.graphs import KnowledgeGraph, Vertex
 from tqdm import tqdm
 
 def create_kg(triples, label_predicates):

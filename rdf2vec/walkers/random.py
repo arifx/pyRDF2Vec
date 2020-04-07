@@ -1,5 +1,4 @@
 from rdf2vec.walkers import Walker
-from rdf2vec.graph import Vertex
 import numpy as np
 from hashlib import md5
 
@@ -19,13 +18,13 @@ class RandomWalker(Walker):
             walks_copy = walks.copy()
             for walk in walks_copy:
                 node = walk[-1]
-                neighbors = graph.get_neighbors(node)
+                hops = graph.get_hops(node)
 
-                if len(neighbors) > 0:
+                if len(hops) > 0:
                     walks.remove(walk)
 
-                for neighbor in neighbors:
-                    walks.add(walk + (neighbor, ))
+                for (pred, obj) in hops:
+                    walks.add(walk + (pred, obj))
 
             # TODO: Should we prune in every iteration?
             if self.walks_per_graph is not None:
@@ -42,14 +41,14 @@ class RandomWalker(Walker):
     def extract(self, graph, instances):
         canonical_walks = set()
         for instance in instances:
-            walks = self.extract_random_walks(graph, Vertex(str(instance)))
+            walks = self.extract_random_walks(graph, str(instance))
             for walk in walks:
                 canonical_walk = []
                 for i, hop in enumerate(walk):
                     if i == 0 or i % 2 == 1:
-                        canonical_walk.append(hop.name)
+                        canonical_walk.append(str(hop))
                     else:
-                        digest = md5(hop.name.encode()).digest()[:8]
+                        digest = md5(str(hop).encode()).digest()[:8]
                         canonical_walk.append(str(digest))
 
                 canonical_walks.add(tuple(canonical_walk))

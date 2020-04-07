@@ -1,4 +1,6 @@
 from collections import defaultdict
+import rdflib
+
 
 class Vertex(object):
     vertex_counter = 0
@@ -26,12 +28,43 @@ class Vertex(object):
     def __lt__(self, other):
         return self.name < other.name
 
+    def __str__(self):
+        return self.name
+
 
 class KnowledgeGraph(object):
-    def __init__(self):
+    def __init__(self, file, label_predicates, format=None):
+        self.file = file
+        self.label_predicates = label_predicates
+        self.format = format
+
         self._vertices = set()
         self._transition_matrix = defaultdict(set)
         self._inv_transition_matrix = defaultdict(set)
+
+        self._read_file()
+
+    def _read_file(self):
+        """Parse a file with rdflib"""
+        g = rdflib.Graph()
+        try:
+            if self.format is None:
+                g.parse(self.file, format=file.split('.')[-1])
+            else:
+                g.parse(self.file, format=self.format)
+        except:
+            g.parse(self.file)
+
+        for (s, p, o) in g:
+            if p not in self.label_predicates:
+                s_v = Vertex(str(s))
+                o_v = Vertex(str(o))
+                p_v = Vertex(str(p), predicate=True, _from=s_v, _to=o_v)
+                self.add_vertex(s_v)
+                self.add_vertex(p_v)
+                self.add_vertex(o_v)
+                self.add_edge(s_v, p_v)
+                self.add_edge(p_v, o_v)
         
     def add_vertex(self, vertex):
         """Add a vertex to the Knowledge Graph."""
@@ -50,12 +83,31 @@ class KnowledgeGraph(object):
         if v2 in self._transition_matrix[v1]:
             self._transition_matrix[v1].remove(v2)
 
+    def get_hops(self, vertex):
+        """Returns a hop (vertex -> predicate -> object)"""
+        if isinstance(vertex, str):
+            vertex = Vertex(vertex)
+
+        hops = []
+        predicates = self._transition_matrix[vertex]
+        for pred in predicates:
+            assert len(self._transition_matrix[pred]) == 1
+            for obj in self._transition_matrix[pred]:
+                hops.append((pred, obj))
+        return hops
+
     def get_neighbors(self, vertex):
         """Get all the neighbors of vertex (vertex -> neighbor)."""
+        if isinstance(vertex, str):
+            vertex = Vertex(vertex)
+
         return self._transition_matrix[vertex]
 
     def get_inv_neighbors(self, vertex):
         """Get all the neighbors of vertex (vertex -> neighbor)."""
+        if isinstance(vertex, str):
+            vertex = Vertex(vertex)
+
         return self._inv_transition_matrix[vertex]
     
     def visualise(self):

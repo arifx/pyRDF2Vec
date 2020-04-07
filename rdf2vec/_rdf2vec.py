@@ -1,12 +1,13 @@
-import rdflib
-import numpy as np
-from sklearn.utils.validation import check_is_fitted
-from gensim.models.word2vec import Word2Vec
-import tqdm
 import copy
-from rdf2vec.graph import Vertex
 from hashlib import md5
 import itertools
+
+import rdflib
+import numpy as np
+import tqdm
+from sklearn.utils.validation import check_is_fitted
+from gensim.models.word2vec import Word2Vec
+
 from rdf2vec.walkers import RandomWalker
 
 
