@@ -33,6 +33,12 @@ class KnowledgeGraph(object):
         self._transition_matrix = defaultdict(set)
         self._inv_transition_matrix = defaultdict(set)
         
+    def get_all_entities(self):
+        entities = set([])
+        for v in self._vertices:
+            entities.add(v.name)
+        return list(entities)
+        
     def add_vertex(self, vertex):
         """Add a vertex to the Knowledge Graph."""
         if vertex.predicate:

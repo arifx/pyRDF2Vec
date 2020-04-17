@@ -1,3 +1,5 @@
+pyspark
+findspark
 gensim
 matplotlib
 networkx

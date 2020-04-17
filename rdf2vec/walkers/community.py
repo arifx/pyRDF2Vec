@@ -4,13 +4,13 @@ from collections import defaultdict
 from hashlib import md5
 import networkx as nx
 import numpy as np
-import community
+#import community
 import itertools
 import math
 
 def check_random_state(seed):
     return np.random
-community.community_louvain.check_random_state = check_random_state
+#community.community_louvain.check_random_state = check_random_state
 
 def sample_from_iterable(x):
     perms = itertools.permutations(x)

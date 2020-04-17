@@ -50,7 +50,7 @@ kg = rdflib_to_kg('sample/mutag.owl', label_predicates=label_predicates)
 #########################################################################
 
 # We'll all possible walks of depth 2
-random_walker = RandomWalker(4, float('inf'))
+random_walker = RandomWalker(2, 4)
 
 # Create embeddings with random walks
 transformer = RDF2VecTransformer(walkers=[random_walker], sg=1)
